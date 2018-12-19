@@ -16,4 +16,30 @@ typedef struct elementosInstruccion
 }instruccion;
 
 
+typedef struct instruccionesArchivoArchivoLectura
+{
+    char **datos;
+    int indice;
+}instruccionesArchivo;
+
+
+typedef struct memoriaDatos
+{
+    int **datos;
+}memoria;
+
+
+typedef struct registrosPrograma
+{
+    int *datos;
+}registros;
+
+typedef struct buffer
+{
+	
+}
+
+
+
+
 #endif /*ESTRUCTURAS_H*/

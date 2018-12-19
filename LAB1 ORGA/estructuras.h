@@ -18,9 +18,9 @@ typedef struct lineaInstruccion
     int R1;
     int R2;
     int R3;
-    int V_R1;
-    int V_R2;
-    int V_R3;
+    int valor_R1;
+    int valor_R2;
+    int valor_R3;
 }instruccion;
 
 /*
@@ -50,7 +50,7 @@ typedef struct arregloInstruccion
 {
     char **datos;
     int indice;
-}listaInstrucciones;
+}instruccionesArchivo;
 
 /*
  * Descripcion: Estructura representativa del juego "gato", en donde se tiene dos enteros

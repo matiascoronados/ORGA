@@ -7,15 +7,15 @@
 instruccion* crearInstruccion();
 memoria* crearMemoriaDatos();
 registros* crearRegistros();
-listaInstrucciones* crearArregloInstrucciones();
+instruccionesArchivo* crearArregloInstrucciones();
 gato* crearGato();
 //Lectura de archivo
-void guardarInstruccion(listaInstrucciones *p_listInst,char* instruccion);
+void guardarInstruccion(instruccionesArchivo *p_listInst,char* instruccion);
 char* solicitarNombreArchivo(int tipoArchivo);
-listaInstrucciones* leerArchivoEntrada();
-listaInstrucciones* contenidoArchivo(char* nombreArchivo);
+instruccionesArchivo* leerArchivoEntrada();
+instruccionesArchivo* contenidoArchivo(char* nombreArchivo);
 //MIPS
-instruccion* instructionFetch(listaInstrucciones *p_listInst);
+instruccion* instructionFetch(instruccionesArchivo *p_listInst);
 int instructionDetection(instruccion *p_instruc, registros *p_reg);
 int execute(instruccion *p_instruc);
 int memoryAccess(instruccion *p_instruc,memoria *p_mem);
@@ -46,7 +46,7 @@ void conformarArchivoSalida_Etapas(int contIF,int contID,int contEX,int contMEM,
 void liberarMemoria_instruccion(instruccion *p_inst);
 void liberarMemoria_memoria(memoria *p_mem);
 void liberarMemoria_registros(registros *p_reg);
-void liberarMemoria_listaInstrucciones(listaInstrucciones *p_listInst);
+void liberarMemoria_instruccionesArchivo(instruccionesArchivo *p_listInst);
 void liberarMemoria_gato(gato *p_gato);
 
 #endif /* CABECERA_H */

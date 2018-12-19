@@ -23,9 +23,9 @@ instruccion* crearInstruccion()
     p_instruccion->R1 = 0;
     p_instruccion->R2 = 0;
     p_instruccion->R3 = 0;
-    p_instruccion->V_R1 = 0;
-    p_instruccion->V_R2 = 0;
-    p_instruccion->V_R3 = 0;
+    p_instruccion->valor_R1 = 0;
+    p_instruccion->valor_R2 = 0;
+    p_instruccion->valor_R3 = 0;
     return p_instruccion;
 }
 
@@ -67,12 +67,12 @@ registros* crearRegistros()
 
 /*
  * Entradas: N/A
- * Salida: Puntero de una estructura listaInstrucciones, con todos sus elementos inicializados,
+ * Salida: Puntero de una estructura instruccionesArchivo, con todos sus elementos inicializados,
  *         y con memoria. 
  */
-listaInstrucciones* crearArregloInstrucciones()
+instruccionesArchivo* crearArregloInstrucciones()
 {
-    listaInstrucciones *p_listInst = malloc(sizeof(listaInstrucciones));
+    instruccionesArchivo *p_listInst = malloc(sizeof(instruccionesArchivo));
     p_listInst->indice = 0;
     p_listInst->datos = malloc(sizeof(char*)*MAX_ARREGLO);
     for(int i = 0 ; i < MAX_ARREGLO;i++)
@@ -105,7 +105,7 @@ gato* crearGato()
  * Entradas: Puntero a una lista de instrucciones, y una instruccion a almacenar
  * Salida: N/A
  */
-void guardarInstruccion(listaInstrucciones *p_listInst,char* instruccion)
+void guardarInstruccion(instruccionesArchivo *p_listInst,char* instruccion)
 {
     int indice = p_listInst->indice;
     strcpy(p_listInst->datos[indice],instruccion);
@@ -155,10 +155,10 @@ char* solicitarNombreArchivo(int tipoArchivo)
  * Entradas: N/A
  * Salida: Lista de instrucciones leidas a partir de un archivo de entrada.
  */
-listaInstrucciones* leerArchivoEntrada()
+instruccionesArchivo* leerArchivoEntrada()
 {
     char* nombreArchivo = solicitarNombreArchivo(0);
-    listaInstrucciones* listaSalida = contenidoArchivo(nombreArchivo);
+    instruccionesArchivo* listaSalida = contenidoArchivo(nombreArchivo);
     free(nombreArchivo);
     return listaSalida;
 }
@@ -167,11 +167,11 @@ listaInstrucciones* leerArchivoEntrada()
  * Entradas: String que indica el nombre del archivo a abrir
  * Salida: Lista con todas las intrucciones encontradas dentro del archivo.
  */
-listaInstrucciones* contenidoArchivo(char* nombreArchivo)
+instruccionesArchivo* contenidoArchivo(char* nombreArchivo)
 {
     FILE *archivo;
     archivo = fopen(nombreArchivo,"r");
-    listaInstrucciones *p_listInst = crearArregloInstrucciones();
+    instruccionesArchivo *p_listInst = crearArregloInstrucciones();
     int indice = p_listInst->indice;
 
     while(feof(archivo) == 0){
@@ -194,7 +194,7 @@ listaInstrucciones* contenidoArchivo(char* nombreArchivo)
  * Consideracion: La eleccion de cual instruccion tomar esta dado por la variable
  * global programCounter, la cual se modifica tras cada iteracion de la funcion.
  */
-instruccion* instructionFetch(listaInstrucciones *p_listInst)
+instruccion* instructionFetch(instruccionesArchivo *p_listInst)
 {
     instruccion* p_inst = crearInstruccion();
     strcpy(p_inst->instruccion,p_listInst->datos[programCounter]);
@@ -220,8 +220,8 @@ int instructionDetection(instruccion *p_instruc, registros *p_reg)
         //Operaciones: ADDI, SUBI
         int indice_R2;
         indice_R2 = p_instruc->R2;
-        p_instruc->V_R2 = p_reg->datos[indice_R2];
-        p_instruc->V_R3 = p_instruc->R3;
+        p_instruc->valor_R2 = p_reg->datos[indice_R2];
+        p_instruc->valor_R3 = p_instruc->R3;
         return 1;
     }
     else if(p_instruc->tipo == 1){
@@ -229,8 +229,8 @@ int instructionDetection(instruccion *p_instruc, registros *p_reg)
             //Operacion: SW
             int indice_R1;
             indice_R1 = p_instruc->R1;
-            p_instruc->V_R1 = p_reg->datos[indice_R1];
-            p_instruc->V_R2 = p_instruc->R2;
+            p_instruc->valor_R1 = p_reg->datos[indice_R1];
+            p_instruc->valor_R2 = p_instruc->R2;
             return 1;
         }
         else{
@@ -252,18 +252,18 @@ int execute(instruccion *p_instruc)
     if(p_instruc->tipo == 0){
         //Operacion ADDI
         if(p_instruc->op == 0){
-            p_instruc->V_R1 = p_instruc->V_R2 + p_instruc->V_R3;
+            p_instruc->valor_R1 = p_instruc->valor_R2 + p_instruc->valor_R3;
             return 1;
         }
         //Operacion SUBI
         else if(p_instruc->op == 1){
-            p_instruc->V_R1 = p_instruc->V_R2 - p_instruc->V_R3;
+            p_instruc->valor_R1 = p_instruc->valor_R2 - p_instruc->valor_R3;
             return 1;
         }
     }
     else{
         //Operacion LW, SW.
-        p_instruc->V_R2 = calcularDireccion(p_instruc->R2);
+        p_instruc->valor_R2 = calcularDireccion(p_instruc->R2);
         return 1;
     }
 }
@@ -280,15 +280,15 @@ int memoryAccess(instruccion *p_instruc,memoria *p_mem)
         if(p_instruc->op == 2){
             //Operacion LW
             int indiceRegistro = p_instruc->R3;
-            int indiceElemento = p_instruc->V_R2;
-            p_instruc->V_R1 = p_mem->datos[indiceRegistro][indiceElemento];
+            int indiceElemento = p_instruc->valor_R2;
+            p_instruc->valor_R1 = p_mem->datos[indiceRegistro][indiceElemento];
             return 1;
         }
         else if(p_instruc->op == 3){
             //Operacion SW
             int indiceRegistro = p_instruc->R3;
-            int indiceElemento = p_instruc->V_R2;
-            p_mem->datos[indiceRegistro][indiceElemento] = p_instruc->V_R1;
+            int indiceElemento = p_instruc->valor_R2;
+            p_mem->datos[indiceRegistro][indiceElemento] = p_instruc->valor_R1;
             return 1;
         }
     }
@@ -309,14 +309,14 @@ int writeBack(instruccion *p_instruc,registros *p_reg)
     if(p_instruc->tipo == 0){
         //Operacion ADDI,SUBI
         int indiceRegistro = p_instruc->R1;
-        p_reg->datos[indiceRegistro] = p_instruc->V_R1;
+        p_reg->datos[indiceRegistro] = p_instruc->valor_R1;
         return 1;
     }
     else if(p_instruc->tipo == 1){
         if(p_instruc->op == 2){
             //Operacion LW
             int indiceRegistro = p_instruc->R1;
-            p_reg->datos[indiceRegistro] = p_instruc->V_R1;
+            p_reg->datos[indiceRegistro] = p_instruc->valor_R1;
             return 1;
         }
         else{
@@ -501,7 +501,7 @@ void analizarInstruccionGato(gato *p_gato,instruccion *p_inst)
         //Si se trata del registro $sp
         //Almacenar espacio del tablero.
         if(p_inst->R1 == 29){
-            p_gato->espacioTablero = abs(p_inst->V_R3);
+            p_gato->espacioTablero = abs(p_inst->valor_R3);
         }
         else{
             //Guardar jugada de usuario
@@ -521,28 +521,32 @@ void analizarInstruccionGato(gato *p_gato,instruccion *p_inst)
  * Consideracion: Dependiendo de la operacion, y el tipo de la instruccion, se
  * procede a analizar que jugada realizo el usuario.
  */
-void examinarJugada(gato *p_gato,instruccion *p_inst)
+void examinarJugada(gato *p_gato,instruccion *p_inst) /////////////////////////////////////// +1 A valor_R2 DE AMBOS CASOS.
 {
     //La instruccion indica que se trata del jugador A
     if(p_inst->R1 == p_gato->jugadorA){
         //Jugada de la forma OP R1, R2, R3
         if(p_inst->tipo == 0){
-            elegirAccionJugada(p_gato,p_inst,p_gato->jugadorA,p_inst->V_R3);
+            printf("POS Jugada = %d\n",p_inst->valor_R3);
+            elegirAccionJugada(p_gato,p_inst,p_gato->jugadorA,p_inst->valor_R3);
         }
         //Jugada de la forma OP R1, R2(R3)
         else if(p_inst->tipo == 1){
-            elegirAccionJugada(p_gato,p_inst,p_gato->jugadorA,p_inst->V_R2);
+            printf("POS Jugada = %d\n",p_inst->valor_R2);
+            elegirAccionJugada(p_gato,p_inst,p_gato->jugadorA,p_inst->valor_R2+1);
         }
     }
     //La instruccion indica que se trata del jugador B
     else if(p_inst->R1 == p_gato->jugadorB){
         //Jugada de la forma OP R1, R2, R3
         if(p_inst->tipo == 0){
-            elegirAccionJugada(p_gato, p_inst,p_gato->jugadorB,p_inst->V_R3);
+            printf("POS Jugada = %d\n",p_inst->valor_R3);
+            elegirAccionJugada(p_gato, p_inst,p_gato->jugadorB,p_inst->valor_R3);
         }
         //Jugada de la forma OP R1, R2(R3)
         else if(p_inst->tipo == 1){
-            elegirAccionJugada(p_gato, p_inst,p_gato->jugadorB,p_inst->V_R2);
+            printf("POS Jugada = %d\n",p_inst->valor_R2);
+            elegirAccionJugada(p_gato, p_inst,p_gato->jugadorB,p_inst->valor_R2+1);
         }
     }
     else
@@ -559,7 +563,7 @@ void examinarJugada(gato *p_gato,instruccion *p_inst)
  * Consideracion: A raiz de la operacion de la instruccion, y de las jugadas que se encuentran
  * utilizadas, se procede a almacenar o eliminar una jugada.
  */
-void elegirAccionJugada(gato *p_gato,instruccion *p_inst, int jugador,int jugada)
+void elegirAccionJugada(gato *p_gato,instruccion *p_inst, int jugador,int jugada) //REMOVER +1 A GUARDARJUGADAS.!!!!!!!!
 {
     //Verifica si existe la jugada en cualquiera de los 2 jugadores.
     //Si la jugada no existe.
@@ -572,7 +576,7 @@ void elegirAccionJugada(gato *p_gato,instruccion *p_inst, int jugador,int jugada
             }
             else{
                 //Si la operacion es SW, la jugada sera representada del 0 al 8, por ello de le agrega 1 para que quede del 1 al 9.
-                guardarJugada(p_gato,jugador,jugada+1);
+                guardarJugada(p_gato,jugador,jugada);
             }
             
         }
@@ -591,7 +595,7 @@ void elegirAccionJugada(gato *p_gato,instruccion *p_inst, int jugador,int jugada
                 eliminarJugada(p_gato,jugador,jugada);
             }
             else{
-                eliminarJugada(p_gato,jugador,jugada+1);
+                eliminarJugada(p_gato,jugador,jugada);
             }
         }
         //En el caso de que se desee realizar una jugada ya hecha.
@@ -707,7 +711,7 @@ int jugadaExiste_Total(gato *p_gato, int jugada)
 int jugadaExiste_Jugador(int *listaJugadas,int largoLista,int jugada)
 {
     int verificador = 0;
-    for(int i = 0 ; i < largoLista; i++){
+    for(int i = 0 ; i < largoLista; i++){ 
         if(listaJugadas[i] == jugada){
             verificador = 1;
         }
@@ -727,6 +731,7 @@ int estadoPartidaGato(gato *p_gato)
     int elementosA = p_gato->indiceA;
     int elementosB = p_gato->indiceB;
     int totalElementos = elementosA + elementosB;
+    printf("TOTAL ELEMENTOS %d\n",totalElementos);
     //Si no hay suficientes jugadas, el juego esta incompleto.
     if(totalElementos < 9){
         return 0;
@@ -755,18 +760,15 @@ int estadoPartidaGato(gato *p_gato)
  * Salida: Entero que indica si la lista posee una combinacion ganadora, en donde
  * 1 = Posee una combinacion ganadora, y 0 no la posee.
  */
-int buscarCombinacionGanadora(int *listaJugadas,int largoLista)
+int buscarCombinacionGanadora(int *listaJugadas,int largoLista)//////MOD2//////////Todo le sumo 1//////////////////////////////////////////////////
 {
-    if(poseeCombinacionGanadora(listaJugadas,largoLista,0,1,2) == 1){
+    if(poseeCombinacionGanadora(listaJugadas,largoLista,1,2,3) == 1){
         return 1;
     }
-    else if(poseeCombinacionGanadora(listaJugadas,largoLista,3,4,5) == 1){
+    else if(poseeCombinacionGanadora(listaJugadas,largoLista,4,5,6) == 1){
         return 1;
     }
-    else if(poseeCombinacionGanadora(listaJugadas,largoLista,6,7,8) == 1){
-        return 1;
-    }
-    else if(poseeCombinacionGanadora(listaJugadas,largoLista,0,3,6) == 1){
+    else if(poseeCombinacionGanadora(listaJugadas,largoLista,7,8,9) == 1){
         return 1;
     }
     else if(poseeCombinacionGanadora(listaJugadas,largoLista,1,4,7) == 1){
@@ -775,10 +777,13 @@ int buscarCombinacionGanadora(int *listaJugadas,int largoLista)
     else if(poseeCombinacionGanadora(listaJugadas,largoLista,2,5,8) == 1){
         return 1;
     }
-    else if(poseeCombinacionGanadora(listaJugadas,largoLista,0,4,8) == 1){
+    else if(poseeCombinacionGanadora(listaJugadas,largoLista,3,6,9) == 1){
         return 1;
     }
-    else if(poseeCombinacionGanadora(listaJugadas,largoLista,6,4,2) == 1){
+    else if(poseeCombinacionGanadora(listaJugadas,largoLista,1,5,9) == 1){
+        return 1;
+    }
+    else if(poseeCombinacionGanadora(listaJugadas,largoLista,7,5,3) == 1){
         return 1;
     }
     else{
@@ -828,21 +833,22 @@ int poseeCombinacionGanadora(int *listaJugadas,int largoLista,int M1,int M2,int 
  * de los elementos almacenados dentro del gato de entrada. Ingresanto tanto
  * los elementos del tablero, como el estado final de la partida.
  */
-void conformarArchivoSalida_Gato(gato *p_gato)
+void conformarArchivoSalida_Gato(gato *p_gato)//////MOD3 i -> i-1//////i inicia de 1; i <= MAX_...////////////////////////////////////////
 {
     FILE *archivo;
     char *nombreArchivo;
     nombreArchivo = solicitarNombreArchivo(1);
     archivo = fopen(nombreArchivo,"w");
-    for(int i = 0 ; i < MAX_TABLERO;i++){
+    for(int i = 1 ; i <= MAX_TABLERO;i++){
+
         if(jugadaExiste_Jugador(p_gato->listaJugadasA,p_gato->indiceA,i) == 1){
-            agregarFigura(archivo,"X",i);
+            agregarFigura(archivo,"X",i-1);
         }
         else if(jugadaExiste_Jugador(p_gato->listaJugadasB,p_gato->indiceB,i) == 1){
-            agregarFigura(archivo,"O",i);
+            agregarFigura(archivo,"O",i-1);
         }
         else {
-            agregarFigura(archivo," ",i);
+            agregarFigura(archivo," ",i-1);
         }
     }
     int estadoFinal = estadoPartidaGato(p_gato);
@@ -957,7 +963,7 @@ void liberarMemoria_registros(registros *p_reg)
  * Consideracion: La funcion se encarga de liberar la memoria dinamica de los elementos
  * de la estructura lista de instrucciones
  */
-void liberarMemoria_listaInstrucciones(listaInstrucciones *p_listInst)
+void liberarMemoria_instruccionesArchivo(instruccionesArchivo *p_listInst)
 {
     if(p_listInst != NULL){
         for(int i = 0 ; i < MAX_ARREGLO; i++){

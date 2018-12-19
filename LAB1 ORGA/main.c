@@ -14,7 +14,7 @@ extern int programCounter;
  */
 
 int main(int argc, char** argv) {
-    listaInstrucciones *p_listInst;
+    instruccionesArchivo *p_listInst;
     //Se almacenan todos las instrucciones del archivo de entrada.
     p_listInst = leerArchivoEntrada();
     int max_inst = p_listInst->indice;
@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
     //Se libera la memoria de las estructuras utilizadas.
     liberarMemoria_memoria(p_mem);
     liberarMemoria_registros(p_reg);
-    liberarMemoria_listaInstrucciones(p_listInst);
+    liberarMemoria_instruccionesArchivo(p_listInst);
     liberarMemoria_gato(p_gato);
     
     return (EXIT_SUCCESS);
