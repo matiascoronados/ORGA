@@ -143,26 +143,126 @@ void prediccionHazard()
 
 }
 
+
+
+int buscarLabbel(instruccionesArchivo *p_listInst,char *salto)
+{
+    int largoString = sizeof(salto);
+    for(int i = 0 ; i < p_listInst->indice;i++){
+        if(strncmp(p_listInst->datos[i],salto,largoString-1) == 0){
+            return i;
+        }
+    }
+    printf("Se detecto un LABBEL incorrecto\n");
+    printf("Cerrando programa...\n");
+    exit(EXIT_FAILURE);
+    return -1;
+}
+
+
+int buscarDireccionMemoriaInstruccion (instruccionesArchivo *p_listInst, instruccion *p_inst, int indiceContenido)
+{
+    char instruccionString[100],*buffer;
+    int indice = indiceContenido; 
+    strcpy(&instruccionString[0],p_inst->instruccion);
+    //Separaciones posibles entre los elementos de la instruccion
+    char separacionA[] = " ";
+    buffer = strtok( &instruccionString[0], separacionA );
+    while( buffer != NULL  && indice != 0){
+        buffer = strtok( NULL, separacionA);
+        indice--;
+    }
+    return buscarLabbel(p_listInst,p_inst);
+}
+
+
+
+//OJO: No puede retornar instruccion.
+//Necesario reconocer todos estos elementos antes de ingresar al IF real.
+//Para analizar busqueda de HAZZARS en las 2 siguientes instrucciones.
+//Si existe se agregan NOP y/o aplica FORWARDING.
+
+
 instruccion* instructionFetch(instruccionesArchivo *p_listInst)
 {
     instruccion* p_inst = crearInstruccion();
     strcpy(p_inst->instruccion,p_listInst->datos[programCounter]);
     p_inst->op = reconocerOperacion(p_inst);
     p_inst->tipo = reconocerTipo(p_inst);
-
-    if(p_inst->tipo == 2)
+    int tipo = p_inst->tipo;
+    if(tipo == 0 || tipo == 1 || tipo == 3)
     {
-
+        p_inst->R1 = buscarContenidoInstruccion(p_inst,1);
+        p_inst->R2 = buscarContenidoInstruccion(p_inst,2);
+        p_inst->R3 = buscarContenidoInstruccion(p_inst,3);
     }
-
-
-
-    p_inst->R1 = buscarContenidoInstruccion(p_inst,1);
-    p_inst->R2 = buscarContenidoInstruccion(p_inst,2);
-    p_inst->R3 = buscarContenidoInstruccion(p_inst,3);
+    else if(tipo == 2)
+    {
+        p_inst->R1 = buscarContenidoInstruccion(p_inst,1);
+        p_inst->R2 = buscarContenidoInstruccion(p_inst,2);
+        p_inst->R3 = buscarDireccionMemoriaInstruccion(p_listInst,p_inst,3);
+    }
+    else if(tipo == 4)
+    {
+        p_inst->R1 = buscarDireccionMemoriaInstruccion(p_listInst,p_inst,1);
+    }
+    else // tipo == 5
+    {
+        p_inst->R1 = buscarContenidoInstruccion(p_inst,1);
+    }
     programCounter++;
     return p_inst;
 }
+
+
+int instructionDetection(instruccion *p_instruc, registros *p_reg)
+{
+    int tipo = p_instruc->tipo;
+    if(tipo == 0){
+        //Operaciones: ADD, SUB, MUL
+        int indice_R2;
+        indice_R2 = p_instruc->R2;
+        p_instruc->valor_R2 = p_reg->datos[indice_R2];
+        p_instruc->valor_R3 = p_instruc->R3;
+        return 1;
+    }
+    else if(tipo == 1 || tipo == 2)
+    {
+        //Operaciones: ADDI, SUBI, ADDIU, BEQ, BLT, BNE, BGT.
+    }
+    else if(tipo == 3)
+    {
+        if(p_instruc->op == 11)
+        {
+            //Operacion: SW
+            int indice_R1;
+            indice_R1 = p_instruc->R1;
+            p_instruc->valor_R1 = p_reg->datos[indice_R1];
+            p_instruc->valor_R2 = p_instruc->R2;
+            return 1;
+        }
+        else
+        {
+        //Operacion: LW
+            return 1;
+        }
+    }
+    else if(tipo == 4)
+    {
+        //Operacion: J,JAL
+    }
+    else //if(tipo == 5) tipo JR
+    {
+        //Operacion: 
+    }
+    return 0;
+}
+
+
+
+
+
+
 
 //16 LABBEL.
 int reconocerOperacion(instruccion *p_inst)
