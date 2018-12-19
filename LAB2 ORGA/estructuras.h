@@ -34,10 +34,14 @@ typedef struct registrosPrograma
     int *datos;
 }registros;
 
-typedef struct buffer
+typedef struct elementosPipeline
 {
-	
-}
+	instruccion *ID;
+	instruccion *IF;
+	instruccion *EX;
+	instruccion *MEM;
+	instruccion *WB;
+}pipeline
 
 
 
