@@ -2,6 +2,15 @@
 #define ESTRUCTURAS_H
 
 
+typedef struct forwardingDatos
+{
+    int poseeHazzard;
+    int posicion;
+    int numInstruccion; 
+    int registroProblema;
+    int multipleForward;
+}forward;
+
 typedef struct elementosInstruccion
 {
     char *instruccion;
@@ -13,6 +22,7 @@ typedef struct elementosInstruccion
     int valor_R1;
     int valor_R2;
     int valor_R3;
+    forward *datosForward;
 }instruccion;
 
 
@@ -36,12 +46,33 @@ typedef struct registrosPrograma
 
 typedef struct elementosPipeline
 {
+    instruccion *IF;
 	instruccion *ID;
-	instruccion *IF;
 	instruccion *EX;
 	instruccion *MEM;
 	instruccion *WB;
-}pipeline
+}pipeline;
+
+typedef struct bufferIntermedios
+{
+    instruccion *ID_EX;
+    instruccion *EX_MEM;
+    instruccion *MEM_WB;
+}buffer;
+
+typedef struct errorHazzard
+{
+    int numeroInstruccion;
+    int numeroCiclo;
+    int tipoError; // 0 = JUMP; 1 = BEQ; 2 = SW Con NOP; 3 = SW sin NOP; 4 = Forwarding EX/MEM; 5 = Forwarding MEM/WB.
+}error;
+
+typedef struct reporteHazzard
+{
+    error **listaError;
+    int indiceError;
+}reporte;
+
 
 
 

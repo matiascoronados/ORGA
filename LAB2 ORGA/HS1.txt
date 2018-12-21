@@ -1,0 +1,11 @@
+0.Solucionable a travez de FLUSH/NOP en IF/ID
+1.Solucionable a travez de FLUSH/NOP en IF/ID, ID/EX y EX/MEM
+2.Solucionable a travez de NOP y Forwarding MEM/WB a ID/EX
+3.Solucionable a travez de Forwarding MEM/WB a ID/EX
+4.Solucionable a travez de FLUSH/NOP en IF/ID
+5.Solucionable a travez de FLUSH/NOP en IF/ID, ID/EX y EX/MEM
+6.Solucionable a travez de NOP y Forwarding MEM/WB a ID/EX
+7.Solucionable a travez de Forwarding MEM/WB a ID/EX
+8.Solucionable a travez de FLUSH/NOP en IF/ID
+9.Solucionable a travez de FLUSH/NOP en IF/ID, ID/EX y EX/MEM
+10.Solucionable a travez de Forwarding EX/MEM a ID/EX

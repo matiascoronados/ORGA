@@ -1,0 +1,8 @@
+addi $t0, $t0, 100
+
+add $t1, $t0, $t1
+
+add $t4, $t0, $t5
+add $t4, $t0, $t5
+add $t4, $t0, $t5
+add $t4, $t0, $t5
