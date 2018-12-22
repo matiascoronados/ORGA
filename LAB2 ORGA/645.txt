@@ -1,7 +1,0 @@
-sw $t0, 0($sp)
-
-lw $t1, 0($sp)
-
-add $t3, $t5, $t1
-add $t4, $t3, $t6
-add $t7, $t3, $t8

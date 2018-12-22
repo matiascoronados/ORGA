@@ -12,7 +12,11 @@ char* nombreRegistros[CANTIDAD_REGISTROS] = {"$zero","$at","$v0","$v1","$a0","$a
                                 ,"$s0","$s1","$s2","$s3","$s4","$s5","$s6","$s7","$t8","$t9","$k0","$k1","$gp","$sp","$fp","$ra"};
 reporte *punteroReporte;
 
-
+/*
+ * Entradas: N/A
+ * Salida: Puntero de una estructura forward, con todos sus elementos inicializados,
+ *         y con memoria. 
+ */
 forward* crearForward()
 {
     forward *p_forward = malloc(sizeof(forward));
@@ -23,7 +27,11 @@ forward* crearForward()
     return p_forward;
 }
 
-
+/*
+ * Entradas: N/A
+ * Salida: Puntero de una estructura instruccion, con todos sus elementos inicializados,
+ *         y con memoria. 
+ */
 instruccion* crearInstruccion(int tipoInstruccion)
 {
     instruccion *p_instruccion;
@@ -58,6 +66,11 @@ instruccion* crearInstruccion(int tipoInstruccion)
     return p_instruccion;
 }
 
+/*
+ * Entradas: N/A
+ * Salida: Puntero de una estructura instruccionesArchivo, con todos sus elementos inicializados,
+ *         y con memoria. 
+ */
 instruccionesArchivo* crearInstruccionesArchivo()
 {
     instruccionesArchivo *p_listInst = malloc(sizeof(instruccionesArchivo));
@@ -69,7 +82,11 @@ instruccionesArchivo* crearInstruccionesArchivo()
     return p_listInst;
 }
 
-
+/*
+ * Entradas: N/A
+ * Salida: Puntero de una estructura registros, con todos sus elementos inicializados,
+ *         y con memoria. 
+ */
 registros* crearRegistros()
 {
     registros *p_registros = malloc(sizeof(registros));
@@ -81,6 +98,11 @@ registros* crearRegistros()
     return p_registros;
 }
 
+/*
+ * Entradas: N/A
+ * Salida: Puntero de una estructura memoria, con todos sus elementos inicializados,
+ *         y con memoria. 
+ */
 memoria* crearMemoriaDatos()
 {
     memoria *p_memoria = malloc(sizeof(memoria));
@@ -96,6 +118,12 @@ memoria* crearMemoriaDatos()
     return p_memoria;
 }
 
+
+/*
+ * Entradas: N/A
+ * Salida: Puntero de una estructura pipeline, con todos sus elementos inicializados,
+ *         y con memoria. 
+ */
 pipeline* crearPipeline()
 {
     pipeline *p_pipe = malloc(sizeof(pipeline));
@@ -107,6 +135,11 @@ pipeline* crearPipeline()
     return p_pipe;
 }
 
+/*
+ * Entradas: N/A
+ * Salida: Puntero de una estructura buffer, con todos sus elementos inicializados,
+ *         y con memoria. 
+ */
 buffer* crearBufferIntermedios()
 {
     buffer *p_buffer = malloc(sizeof(buffer));
@@ -116,7 +149,11 @@ buffer* crearBufferIntermedios()
     return p_buffer;
 }
 
-
+/*
+ * Entradas: N/A
+ * Salida: Puntero de una estructura reporte, con todos sus elementos inicializados,
+ *         y con memoria. 
+ */
 reporte* crearReporteErrores()
 {
     reporte *p_reporte = malloc(sizeof(reporte));
@@ -129,7 +166,12 @@ reporte* crearReporteErrores()
     return p_reporte;
 }
 
-
+/*
+ * Entradas: Entero que indica el tipo de error ingresado.
+ * Salida: N/A
+ * Consideracion: La funcion utiliza un puntero global a reportes, estructura en la cual
+ * se almacenan los errores obtenidos.
+ */
 void agregarError(int tipoError)
 {
     int indice = punteroReporte->indiceError;
@@ -148,8 +190,10 @@ void agregarError(int tipoError)
 }
 
 
-//Tipo 0: Archivo existente.
-//Tipo 1: Archivo a crear.
+/*
+ * Entradas: Entero que indica cual nombre se le tiene que solicitar al usuario
+ * Salida: String representativo del nombre de un archivo.
+ */
 char* obtenerNombreArchivo(int tipoArchivo)
 {
     FILE *archivo;
@@ -176,17 +220,24 @@ char* obtenerNombreArchivo(int tipoArchivo)
     return nombreArchivo;
 }
 
+/*
+ * Entradas: N/A
+ * Salida: Lista de instrucciones leidas a partir de un archivo de entrada.
+ */
 instruccionesArchivo* leerArchivoEntrada()
 {
-    //printf("Ingrese el nombre del archivo de instrucciones\n");
-    //char* nombreArchivo = obtenerNombreArchivo(0);
-    instruccionesArchivo* contenido = contenidoArchivo("entradaA.txt");
-    //free(nombreArchivo);
+    printf("Ingrese el nombre del archivo de instrucciones\n");
+    char* nombreArchivo = obtenerNombreArchivo(0);
+    instruccionesArchivo* contenido = contenidoArchivo(nombreArchivo);
+    free(nombreArchivo);
     return contenido;
 }
 
 
-
+/*
+ * Entradas: String que indica el nombre del archivo a abrir
+ * Salida: Lista con todas las intrucciones encontradas dentro del archivo.
+ */
 instruccionesArchivo* contenidoArchivo(char* nombreArchivo)
 {
     FILE *archivo;
@@ -208,7 +259,10 @@ instruccionesArchivo* contenidoArchivo(char* nombreArchivo)
 }
 
 
-
+/*
+ * Entradas: Puntero las instrucciones de entrada, y un string labbel
+ * Salida: Entero que indica la posicion del labbel.
+ */
 int buscarLabbel(instruccionesArchivo *p_listInst,char *salto)
 {
     int largoString = sizeof(salto);
@@ -223,7 +277,11 @@ int buscarLabbel(instruccionesArchivo *p_listInst,char *salto)
     return -1;
 }
 
-
+/*
+ * Entradas: Puntero a las instrucciones de entrada, otro a una instruccion de entrada, y un 
+ * indice que indica cual elemento de la instruccion se desea acceder.
+ * Salida: Entero que indica la direccion de una posicion labbel.
+ */
 int buscarDireccionMemoriaInstruccion (instruccionesArchivo *p_listInst, instruccion *p_inst, int indiceContenido)
 {
     char instruccionString[100],*buffer;
@@ -239,14 +297,10 @@ int buscarDireccionMemoriaInstruccion (instruccionesArchivo *p_listInst, instruc
     return buscarLabbel(p_listInst,buffer);
 }
 
-
-
-//OJO: No puede retornar instruccion.
-//Necesario reconocer todos estos elementos antes de ingresar al IF real.
-//Para analizar busqueda de HAZZARS en las 2 siguientes instrucciones.
-//Si existe se agregan NOP y/o aplica FORWARDING.
-
-
+/*
+ * Entradas: Puntero a las instrucciones de entrada y un contador de programa tipo entero
+ * Salida: Instruccion generada a razon de lo ingresado.
+ */
 instruccion* conformarInstruccion(instruccionesArchivo *p_listInst, int contadorPrograma)
 {
     instruccion* p_inst = crearInstruccion(0);
@@ -299,19 +353,13 @@ instruccion* conformarInstruccion(instruccionesArchivo *p_listInst, int contador
 }
 
 
-
-
-
-void imprimirInstruccion(instruccion *p_inst)
-{
-    printf("Instruccion = %s\n",p_inst->instruccion);
-    printf("Tipo = %d\n",p_inst->tipo);
-    printf("OP = %d\n",p_inst->op);
-    printf("R1 = %d\n",p_inst->R1);
-    printf("R2 = %d\n",p_inst->R2);
-    printf("R3 = %d\n\n",p_inst->R3);
-}
-
+/*
+ * Entradas: Puntero a las instrucciones de entrada, otro a la memoria y registros del programa.
+ * Salida: N/A
+ * Consideracion: Esta funcion da inicio al proceso del pipeline, agregando una instruccion a la vez
+ * para que se analize en busqueda de los diferentes Hazard que se pueden presentar, asi hasta terminar
+ * con la ejecucion del programa.
+ */
 void iniciarPipeline(instruccionesArchivo *p_listInst,memoria *p_mem, registros *p_reg)
 {
     pipeline *p_pipeline = crearPipeline();
@@ -372,6 +420,7 @@ void iniciarPipeline(instruccionesArchivo *p_listInst,memoria *p_mem, registros 
             contadorPrograma++;
         }
     }
+    //Se agregan 5 NOP para finalizar la ejecucion de las instrucciones restantes.
     contadorPrograma--;
     agregarPipeline(p_pipeline,NOP,p_buffer);
     saltoLinea = ejecutarPipeline(p_pipeline,p_buffer,p_mem,p_reg);
@@ -387,64 +436,15 @@ void iniciarPipeline(instruccionesArchivo *p_listInst,memoria *p_mem, registros 
 
 
 
-
-
+/*
+ * Entradas: Puntero a un pipeline, otro a un buffer, y otros dos a la memoria y registro del programa.
+ * Salida: Entero que indica un posible direccion de instruccion.
+ * Consideracion: Esta funcion se encarga de ejecutar las instrucciones que se encuentran dentro del pipeline,
+ * modificando los buffer intermedios tras cada ejecucion. En los casos de que se obtenga un salto de instruccion
+ * se procedera a entregarlo como salida.
+ */
 int ejecutarPipeline(pipeline *p_pipeline, buffer *p_buffer,memoria *p_mem,registros *p_reg)
 {
-    /*
-    printf("---------------------------------------------------\nCICLO = %d\n",numeroCiclo);
-    if(p_pipeline->IF != NULL)
-    {
-        printf("Entro a IF: %s\n",p_pipeline->IF->instruccion);
-        printf("V_R1 = %d\n",p_pipeline->IF->valor_R1);
-        printf("R1 = %d\n",p_pipeline->IF->R1);
-        printf("V_R2 = %d\n",p_pipeline->IF->valor_R2);
-        printf("R2 = %d\n",p_pipeline->IF->R2);
-        printf("V_R3 = %d\n",p_pipeline->IF->R3);
-        printf("R3 = %d\n\n",p_pipeline->IF->R3);
-    }
-    if(p_pipeline->ID != NULL)
-    {
-        printf("Entro a ID: %s\n",p_pipeline->ID->instruccion);
-        printf("V_R1 = %d\n",p_pipeline->ID->valor_R1);
-        printf("V_R2 = %d\n",p_pipeline->ID->valor_R2);
-        printf("V_R3 = %d\n\n",p_pipeline->ID->valor_R3);
-    }
-    if(p_buffer->ID_EX != NULL)
-    {
-        printf("Entro a ID_EX: %s\n",p_buffer->ID_EX->instruccion);
-    }
-    if(p_pipeline->EX != NULL)
-    {
-        printf("Entro a EX: %s\n",p_pipeline->EX->instruccion);
-        printf("V_R1 = %d\n",p_pipeline->EX->valor_R1);
-        printf("V_R2 = %d\n",p_pipeline->EX->valor_R2);
-        printf("V_R3 = %d\n\n",p_pipeline->EX->valor_R3);
-    }
-    if(p_buffer->EX_MEM != NULL)
-    {
-        printf("Entro a EX_MEM: %s\n",p_buffer->EX_MEM->instruccion);
-    }    
-    if(p_pipeline->MEM != NULL)
-    {
-        printf("Entro a MEM: %s\n",p_pipeline->MEM->instruccion);
-        printf("V_R1 = %d\n",p_pipeline->MEM->valor_R1);
-        printf("V_R2 = %d\n",p_pipeline->MEM->valor_R2);
-        printf("V_R3 = %d\n\n",p_pipeline->MEM->valor_R3);        
-    }        
-    if(p_buffer->MEM_WB != NULL)
-    {
-        printf("Entro a MEM_WB: %s\n",p_buffer->MEM_WB->instruccion);
-    }        
-    if(p_pipeline->WB != NULL)
-    {
-        printf("Entro a WB: %s\n",p_pipeline->WB->instruccion);
-        printf("V_R1 = %d\n",p_pipeline->WB->valor_R1);
-        printf("V_R2 = %d\n",p_pipeline->WB->valor_R2);
-        printf("V_R3 = %d\n\n",p_pipeline->WB->valor_R3);        
-    }      
-    printf("---------------------------------------------------\n");
-    */
     int saltoLineaID, saltoLineaEX;
     numeroCiclo++;
 
@@ -475,7 +475,25 @@ int ejecutarPipeline(pipeline *p_pipeline, buffer *p_buffer,memoria *p_mem,regis
     }
 }
 
+/*
+ * Entradas: Puntero a las instrucciones de entrada, otro a una instruccion de entrada, y un 
+ * indice que indica cual elemento de la instruccion se desea acceder.
+ * Salida: Entero que indica la direccion de una posicion labbel.
+ */
+void agregarPipeline(pipeline *p_pipeline,instruccion *p_inst,buffer *p_buffer)
+{
+    p_pipeline->WB = NULL;
+    p_pipeline->WB = p_pipeline->MEM;
+    p_pipeline->MEM = p_pipeline->EX;
+    p_pipeline->EX = p_pipeline->ID;
+    p_pipeline->ID = p_pipeline->IF;
+    p_pipeline->IF = p_inst;
+}
 
+/*
+ * Entradas: Puntero a una instruccion que pasa por IF
+ * Salida: N/A
+ */
 void instructionFetch(instruccion *p_inst)
 {
     if(p_inst != NULL)
@@ -489,8 +507,12 @@ void instructionFetch(instruccion *p_inst)
 
 }
 
-//Asignio valores.
-
+/*
+ * Entradas: Puntero a una instruccion, un puntero a los registros actuales y un puntero a los buffer del programa
+ * Salida: N/A
+ * Consideracion: En la funcion se le asignan los valores a cada registro, en el caso
+ * de que se tenga un forwarding, se porcede a modificar los datos correspondientes.
+ */
 int instructionDetection(instruccion *p_instruc, registros *p_reg, buffer *p_buffer)
 {
     if(p_instruc != NULL)
@@ -517,7 +539,7 @@ int instructionDetection(instruccion *p_instruc, registros *p_reg, buffer *p_buf
                 if(datosForward->poseeHazzard != 0)
                 {
                     modificarDatos(p_instruc,p_buffer);
-                }
+                }             
             }
             else if(tipo == 2)
             {
@@ -530,11 +552,12 @@ int instructionDetection(instruccion *p_instruc, registros *p_reg, buffer *p_buf
             }
             else if(tipo == 3)
             {
-                if(p_instruc->op == 11)
+                if(p_instruc->op == 12)
                 {
                     //Operacion: SW
                     p_instruc->valor_R1 = p_reg->datos[p_instruc->R1];
                     p_instruc->valor_R2 = p_instruc->R2;
+                    p_instruc->valor_R3 = p_reg->datos[p_instruc->R3];
                     if(datosForward->poseeHazzard != 0)
                     {
                         modificarDatos(p_instruc,p_buffer);
@@ -545,6 +568,7 @@ int instructionDetection(instruccion *p_instruc, registros *p_reg, buffer *p_buf
                 {
                     //Operacion: LW
                     p_instruc->valor_R2 = p_instruc->R2;
+                    p_instruc->valor_R3 = p_reg->datos[p_instruc->R3];
                     if(datosForward->poseeHazzard != 0)
                     {
                         modificarDatos(p_instruc,p_buffer);
@@ -577,6 +601,12 @@ int instructionDetection(instruccion *p_instruc, registros *p_reg, buffer *p_buf
 
 }
 
+/*
+ * Entradas: Puntero a una instruccion
+ * Salida: posible resultado del calculo de una direccion de memoria.
+ * Consideracion: Se procede a realizar todos los calculos de cada instruccion, en
+ * el caso de que se tenga que aplicar un salto de linea, se devolvera el valor.
+ */
 
 int execute(instruccion *p_instruc)
 {
@@ -585,9 +615,9 @@ int execute(instruccion *p_instruc)
         if(p_instruc->tipo != -1)
         {
             int saltoLinea = 0;
-            if(p_instruc->op == 0 || p_instruc->op == 4)
+            if(p_instruc->op == 0)
             {
-                p_instruc->valor_R1 = p_instruc->valor_R2 + p_instruc->valor_R3;
+                p_instruc->valor_R1 = p_instruc->valor_R2 + p_instruc->valor_R3;  
             }
             else if(p_instruc->op == 1 || p_instruc->op == 5)
             {
@@ -600,6 +630,17 @@ int execute(instruccion *p_instruc)
             else if(p_instruc->op == 3)
             {
                 p_instruc->valor_R1 = p_instruc->valor_R1 + p_instruc->valor_R1 * 0;
+            }
+            else if(p_instruc->op == 4)
+            {
+                p_instruc->valor_R1 = p_instruc->valor_R2 + p_instruc->valor_R3;
+                if(p_instruc->R1 == 29)
+                {
+                    if(p_instruc->valor_R1 < 0)
+                    {
+                        p_instruc->valor_R1 = 0;
+                    }
+                }
             }
             else if(p_instruc->op == 6)
             {
@@ -655,6 +696,12 @@ int execute(instruccion *p_instruc)
 
 }
 
+/*
+ * Entradas: Puntero a una instruccion, y un puntero a la memoria.
+ * Salida: N/A
+ * Consideracion: Obtiene los datos almacenados en la memoria, para las instrucciones
+ * LW y SW.
+ */
 void memoryAccess(instruccion *p_instruc,memoria *p_mem)
 {
     if(p_instruc != NULL)
@@ -665,31 +712,54 @@ void memoryAccess(instruccion *p_instruc,memoria *p_mem)
                 //Operacion LW
                 int indiceRegistro = p_instruc->R3;
                 int indiceElemento = p_instruc->valor_R2;
-                p_instruc->valor_R1 = p_mem->datos[indiceRegistro][indiceElemento];
+
+                if(p_instruc->R3 == 29)
+                {
+                    int direccion = calcularDireccion(p_instruc->valor_R3);
+                    p_instruc->valor_R1 = p_mem->datos[indiceRegistro][indiceElemento+direccion];
+                }
+                else
+                {
+                    p_instruc->valor_R1 = p_mem->datos[indiceRegistro][indiceElemento];
+                }
+                
             }
             else if(p_instruc->op == 12){
                 //Operacion SW
                 int indiceRegistro = p_instruc->R3;
                 int indiceElemento = p_instruc->valor_R2;
-                p_mem->datos[indiceRegistro][indiceElemento] = p_instruc->valor_R1;
+                if(p_instruc->R3 == 29)
+                {
+                    int direccion = calcularDireccion(p_instruc->valor_R3);
+                    p_mem->datos[indiceRegistro][indiceElemento+direccion] = p_instruc->valor_R1;           
+                }
+                else
+                {
+                    p_mem->datos[indiceRegistro][indiceElemento] = p_instruc->valor_R1;
+                }
+                
             }        
         }        
     }
 }
 
-
+/*
+ * Entradas: Puntero a una instruccion,y un puntero a los registros actuales.
+ * Salida: N/A
+ * Consideracion: Se procede a escribir los valores obtenidos en los registros actuales.
+ */
 void writeBack(instruccion *p_instruc,registros *p_reg)
 {
     if(p_instruc != NULL)
     {
-        int tipo = p_instruc->tipo;
-        if(tipo != -1)
+        int op = p_instruc->op;
+        if(op != -1)
         {
-            if(tipo != 3 && tipo < 7 )
+            if(op == 0 || op == 1 || op == 2 || op == 4 || op == 5 || op == 6)
             {
                 p_reg->datos[p_instruc->R1] = p_instruc->valor_R1;
             }
-            else if(tipo == 12)
+            else if(op == 12)
             {
                 p_reg->datos[p_instruc->R1] = p_instruc->valor_R1;
             }
@@ -697,14 +767,12 @@ void writeBack(instruccion *p_instruc,registros *p_reg)
     }
 }
 
-
-
-
-
-
-
-
-
+/*
+ * Entradas: Puntero a una instruccion y otro a al buffer del programa.
+ * Salida: N/A
+ * Consideracion: La funcion se encarga de modificar los datos de los registros de la instruccion
+ * de entrada a razon del hazard presentado.
+ */
 void modificarDatos(instruccion *p_inst,buffer *p_buffer)
 {
     forward *datosForward = p_inst->datosForward;
@@ -809,6 +877,11 @@ void modificarDatos(instruccion *p_inst,buffer *p_buffer)
 }
 
 
+/*
+ * Entradas: Entero indice, el cual se transforma para que se norme de tal forma
+ * que apunte a la dirrecion de los registros del programa.
+ * Salida: Entero indice modificado.
+ */
 int calcularDireccion(int indice)
 {
     double direccion = indice/4.0;
@@ -816,20 +889,10 @@ int calcularDireccion(int indice)
     return (int)direccion;
 }
 
-
-
-void agregarPipeline(pipeline *p_pipeline,instruccion *p_inst,buffer *p_buffer)
-{
-    p_pipeline->WB = NULL;
-    p_pipeline->WB = p_pipeline->MEM;
-    p_pipeline->MEM = p_pipeline->EX;
-    p_pipeline->EX = p_pipeline->ID;
-    p_pipeline->ID = p_pipeline->IF;
-    p_pipeline->IF = p_inst;
-}
-
-
-
+/*
+ * Entradas: Puntero a una instruccion
+ * Salida: Entero que indica si existe un hazard de control.
+ */
 int existeHazzardControl(instruccion *p_inst)
 {
     if(p_inst->tipo == 2 || p_inst->tipo == 5){
@@ -845,9 +908,11 @@ int existeHazzardControl(instruccion *p_inst)
     }
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
+ * Entradas: Puntero a una instruccion y otro al pipeline
+ * Salida: Entero que indica si existe un hazard de datos entre la instruccion de entrada, y las primeras
+ * dos instrucciones del pipeline.
+ */
 int existeHazzardDatos(instruccion *p_inst, pipeline *p_pipe)
 {
     //Se agregan NOP y agrega la instruccion.
@@ -989,6 +1054,10 @@ int existeHazzardDatos(instruccion *p_inst, pipeline *p_pipe)
                         if(existeHazzard == 1)
                         {
                             p_inst->datosForward->multipleForward = 1;
+                        }
+                        else if(existeHazzard == 2)
+                        {
+                            existeHazzard = 2;
                         }  
                         else
                         {
@@ -1001,46 +1070,62 @@ int existeHazzardDatos(instruccion *p_inst, pipeline *p_pipe)
                         {
                             p_inst->datosForward->multipleForward = 1;
                         }  
+                        else if(existeHazzard == 2)
+                        {
+                            existeHazzard = 2;
+                        }                              
                         else
                         {
                             agregarDatosHazzard(p_inst,1,2,2);
                         }    
-                    }                    
+                    }                         
+                
                 }
                 else if(p_inst->tipo == 5)
                 {
                     if(p_inst->R1 == instID->R1)
                     {
-                        agregarDatosHazzard(p_inst,1,2,1);
-                        existeHazzard = 1;
+                        if(existeHazzard != 2)
+                        {
+                            agregarDatosHazzard(p_inst,1,2,1);
+                            existeHazzard = 1;                            
+                        }
                     }                    
                 }
                 else
                 {
                     if(p_inst->R3 == instID->R1)
                     {
-                        if(existeHazzard == 1)
+                        if(existeHazzard != 2)
                         {
-                            p_inst->datosForward->multipleForward = 1;
-                        }              
-                        else
-                        {
-                            agregarDatosHazzard(p_inst,1,2,3);
-                            existeHazzard = 1;
-                        }          
+                            if(existeHazzard == 1)
+                            {
+                                p_inst->datosForward->multipleForward = 1;
+                            }              
+                            else
+                            {
+                                agregarDatosHazzard(p_inst,1,2,3);
+                                existeHazzard = 1;
+                            }                              
+                        }
+       
 
                     }
                     else if(p_inst->R2 == instID->R1)
                     {
-                        if(existeHazzard == 1)
+                        if(existeHazzard != 2)
                         {
-                            p_inst->datosForward->multipleForward = 1;
-                        }              
-                        else
-                        {        
-                            agregarDatosHazzard(p_inst,1,2,2);
-                            existeHazzard = 1;
+                            if(existeHazzard == 1)
+                            {
+                                p_inst->datosForward->multipleForward = 1;
+                            }              
+                            else
+                            {        
+                                agregarDatosHazzard(p_inst,1,2,2);
+                                existeHazzard = 1;
+                            }                            
                         }
+
                     }                    
                 }
             }
@@ -1049,7 +1134,11 @@ int existeHazzardDatos(instruccion *p_inst, pipeline *p_pipe)
     return existeHazzard;
 }
 
-
+/*
+ * Entradas: Puntero a una instruccion y 3 enteros punto, posInst y registro problema.
+ * Salida: N/A
+ * Consideracion: Se agregan los datos del hazard dentro de una estructura de instruccion.
+ */
 void agregarDatosHazzard(instruccion *p_inst,int punto,int posInst,int regProblema)
 {
     p_inst->datosForward->poseeHazzard = 1;
@@ -1059,7 +1148,10 @@ void agregarDatosHazzard(instruccion *p_inst,int punto,int posInst,int regProble
 }
 
 
-//16 LABBEL.
+/*
+ * Entradas: Puntero a una instruccion.
+ * Salida: Entero que indica cual operacion corresponde
+ */
 int reconocerOperacion(instruccion *p_inst)
 {
     char *operacion = p_inst->instruccion;
@@ -1100,6 +1192,10 @@ int reconocerOperacion(instruccion *p_inst)
     }
 }
 
+/*
+ * Entradas: Puntero a una instruccion.
+ * Salida: Entero que indica cual es el tipo de la instruccion.
+ */
 int reconocerTipo(instruccion *p_inst)
 {
     if(p_inst->op <= 2){
@@ -1122,8 +1218,11 @@ int reconocerTipo(instruccion *p_inst)
     }
 }
 
-//Tipo contenido se indica si es un registro o immediate; (0) es registro; (1) es immediate.
-
+/*
+ * Entradas: Puntero a una instruccion, entero que indica la posicion del elemento a leer 
+ * y otro entero que indica si es un registro o immediate lo que se busca.
+ * Salida: Entero representativo del elemento encontrado.
+ */
 int buscarContenidoInstruccion(instruccion *p_inst,int indiceContenido,int tipoContenido)
 {
     char instruccionString[100],*buffer;
@@ -1169,6 +1268,10 @@ int buscarContenidoInstruccion(instruccion *p_inst,int indiceContenido,int tipoC
     }
 }
 
+/*
+ * Entradas: Puntero a una registro
+ * Salida: Entero que indica cual registro corresponde.
+ */
 
 int reconocerRegistro (char *registro)
 {    
@@ -1196,6 +1299,10 @@ int reconocerRegistro (char *registro)
     }
 }
 
+/*
+ * Entradas: N/A
+ * Salida: Archivo con los errores hazard presentados.
+ */
 void crearArchivoErrores()
 {
     FILE *archivo;
@@ -1203,28 +1310,36 @@ void crearArchivoErrores()
     printf("Ingrese en nombre del archivo Hazzars\n");
     nombreArchivo = obtenerNombreArchivo(1);
     archivo = fopen(nombreArchivo,"w");
+    int instruccionAnterior = -1;
 
     for(int i = 0; i < punteroReporte->indiceError;i++)
     {
         error *p_error;
         p_error = punteroReporte->listaError[i];
-        fprintf(archivo,"%d.",i);
-        fprintf(archivo,"Hazzard de ");
-        if(p_error->tipoError == 0 || p_error->tipoError == 1)
+        if(p_error->numeroInstruccion != instruccionAnterior)
         {
-            fprintf(archivo,"control ");
+            fprintf(archivo,"Hazzard de ");
+            if(p_error->tipoError == 0 || p_error->tipoError == 1)
+            {
+                fprintf(archivo,"control ");
+            }
+            else
+            {
+                 fprintf(archivo,"datos ");
+            }
+            fprintf(archivo,"en la instruccion %d, CC %d\r\n",p_error->numeroInstruccion,p_error->numeroCiclo);
         }
-        else
-        {
-             fprintf(archivo,"datos ");
-        }
-        fprintf(archivo,"en la instruccion %d, CC %d\r\n",p_error->numeroInstruccion,p_error->numeroCiclo);
+        instruccionAnterior = p_error->numeroInstruccion;
     }
     fclose(archivo);
     free(nombreArchivo);
     printf("Se genero el archivo con exito!\n\n");
 }
 
+/*
+ * Entradas: N/A
+ * Salida: Archivo con las soluciones obtenidas.
+ */
 void crearArchivoSoluciones()
 {
     FILE *archivo;
@@ -1232,39 +1347,48 @@ void crearArchivoSoluciones()
     printf("Ingrese en nombre del archivo HazzarsSoluciones\n");
     nombreArchivo = obtenerNombreArchivo(1);
     archivo = fopen(nombreArchivo,"w");
-
+    int instruccionAnterior = -1;
     for(int i = 0; i < punteroReporte->indiceError;i++)
     {
         error *p_error;
         p_error = punteroReporte->listaError[i];
-        fprintf(archivo,"%d.",i);
-        fprintf(archivo,"Solucionable a travez de ");
-        if(p_error->tipoError == 0)
+
+        if(p_error->numeroInstruccion != instruccionAnterior)
         {
-            fprintf(archivo,"FLUSH/NOP en IF/ID\r\n");
+            fprintf(archivo,"Hazzard de instruccion %d ",p_error->numeroInstruccion);
+            fprintf(archivo,"solucionable a travez de ");
+            if(p_error->tipoError == 0)
+            {
+                fprintf(archivo,"FLUSH/NOP en IF/ID\r\n");
+            }
+            else if(p_error->tipoError == 1)
+            {
+                fprintf(archivo,"FLUSH/NOP en IF/ID y ID/EX\r\n");
+            }
+            else if(p_error->tipoError == 2)
+            {
+                fprintf(archivo,"NOP y Forwarding MEM/WB a ID/EX\r\n");
+            }
+            else if(p_error->tipoError == 4)
+            {
+                fprintf(archivo,"Forwarding EX/MEM a ID/EX\r\n");
+            }
+            else if(p_error->tipoError == 5)
+            {
+                fprintf(archivo,"Forwarding MEM/WB a ID/EX\r\n");
+            }
         }
-        else if(p_error->tipoError == 1)
-        {
-            fprintf(archivo,"FLUSH/NOP en IF/ID, ID/EX y EX/MEM\r\n");
-        }
-        else if(p_error->tipoError == 2)
-        {
-            fprintf(archivo,"NOP y Forwarding MEM/WB a ID/EX\r\n");
-        }
-        else if(p_error->tipoError == 4)
-        {
-            fprintf(archivo,"Forwarding EX/MEM a ID/EX\r\n");
-        }
-        else if(p_error->tipoError == 5)
-        {
-            fprintf(archivo,"Forwarding MEM/WB a ID/EX\r\n");
-        }
+        instruccionAnterior = p_error->numeroInstruccion;
     }
     fclose(archivo);
     free(nombreArchivo);
     printf("Se genero el archivo con exito!\n\n");
 }
 
+/*
+ * Entradas: N/A
+ * Salida: Archivo con los registros obtenidos.
+ */
 void crearArchivoRegistros(registros *p_reg, memoria *p_mem)
 {
     FILE *archivo;
@@ -1280,8 +1404,9 @@ void crearArchivoRegistros(registros *p_reg, memoria *p_mem)
         }
         else
         {
-            fprintf(archivo, "%s 0x123200\r\n",nombreRegistros[i]);
+            fprintf(archivo, "%s 0x7F00200\r\n",nombreRegistros[i]);
         }
+        
     }
     fprintf(archivo,"Elemementos almacenados en stack pointer\n");
     for(int i = 0 ; i < 10;i++)

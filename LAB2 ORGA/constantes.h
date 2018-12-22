@@ -8,5 +8,4 @@
 #define CANTIDAD_FUNCIONES 10
 #define CAPACIDAD_MEMORIA 64
 
-
 #endif /*CONSTANTES_H*/

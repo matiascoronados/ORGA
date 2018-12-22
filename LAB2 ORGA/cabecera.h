@@ -34,7 +34,6 @@ int buscarContenidoInstruccion(instruccion *p_inst,int indiceContenido,int tipoC
 int reconocerRegistro (char *registro);
 reporte* crearReporteErrores();
 void agregarError(int tipoError);
-
 void crearArchivoErrores();
 void crearArchivoSoluciones();
 void crearArchivoRegistros(registros *p_reg, memoria *p_mem);
